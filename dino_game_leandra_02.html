@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSFiddle ypkq9j4s</title>
+
+  <style>
+    #score {
+  text-align: center;
+}
+
+#game {
+  width: 600px;
+  height: 300px;
+  border: 2px solid black;
+  margin: auto;
+  background-image: url("https://media.istockphoto.com/id/1126952398/vector/pixel-art-hell-seamless-background-detailed-vector-illustration.jpg?s=170667a&w=0&k=20&c=zsLLOxbBSp57uYiJABzAoUyXvZp1BafjlQ52Ldu4tm8=");
+  background-size: cover;
+}
+
+#monster {
+  height: 75px;
+  width: 75px;
+  top: 225px;
+  position: relative;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/40/40782.png");
+  background-size: cover;
+}
+
+#rock {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  top: 175px;
+  left: 550px;
+  background-image: url("https://raw.githubusercontent.com/kriscfoster/chrome-dino-game/refs/heads/master/rock.png");
+  background-size: cover;
+}
+
+.rock-animation {
+  animation: rock 1.33s infinite;
+}
+
+@keyframes rock {
+  0% {
+    left: 550px;
+  }
+  100% {
+    left: -50px;
+  }
+}
+
+.jump-animation {
+  animation: jump 0.5s;
+}
+
+@keyframes jump {
+  0% {
+    top: 225px;
+  }
+  50% {
+    top: 75px;
+  }
+  75% {
+    top: 75px;
+  }
+  100% {
+    top: 225px;
+  }
+}
+
+.hit-animation {
+  animation: hit 0.2s;
+}
+
+@keyframes hit {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+  </style>
+
+  
+</head>
+<body>
+  <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dino Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="game">
+      <div id="monster"></div>
+      <div id="rock"></div>
+    </div>
+    <h1 id="score">0</h1>
+
+    <button id="startButton">Start</button>
+    
+    <script src="script.js"></script>
+  </body>
+</html>
+
+
+  <script>
+    const monster = document.getElementById("monster")
+const rock = document.getElementById("rock")
+const score = document.getElementById("score")
+const startButton = document.getElementById("startButton")
+
+let gameRunning = false
+let isJumping = false
+
+function jump() {
+  if (isJumping) return
+
+  isJumping = true
+  monster.classList.add("jump-animation")
+
+  setTimeout(() => {
+    monster.classList.remove("jump-animation")
+    isJumping = false
+  }, 500)
+}
+
+// Springen nur wenn Spiel läuft
+document.addEventListener("keypress", () => {
+
+  if (!gameRunning) return
+
+  if (!monster.classList.contains("jump-animation")) {
+    jump()
+  }
+
+})
+
+
+// Game Loop
+setInterval(() => {
+
+  if (!gameRunning) return   // Spiel läuft noch nicht
+
+  const monsterTop = parseInt(
+    window.getComputedStyle(monster).getPropertyValue("top")
+  )
+
+  const rockLeft = parseInt(
+    window.getComputedStyle(rock).getPropertyValue("left")
+  )
+
+  score.innerText = parseInt(score.innerText) + 2
+
+  if (rockLeft < 0) {
+    rock.style.display = "none"
+  } else {
+    rock.style.display = ""
+  }
+
+  // Kollision
+  if (rockLeft < 50 && rockLeft > 0 && monsterTop > 150) {
+
+  monster.classList.add("hit-animation")
+
+  setTimeout(() => {
+    alert("You got a score of: " + score.innerText)
+    location.reload()
+  }, 300)
+
+}
+
+}, 50)
+
+
+// Start Funktion
+function startGame() {
+  gameRunning = true
+  rock.classList.add("rock-animation")
+}
+
+
+// Start Button
+startButton.addEventListener("click", () => {
+  console.log("Game started")
+  startGame()
+})
+
+  </script>
+</body>
+</html>
